@@ -2,7 +2,14 @@
 
 Formula 1 championship analytics since 2014: how every title fight unfolded round by round, head-to-head driver comparisons, and circuit histories.
 
-**Live demo:** _deploying_
+**Live demo:** https://f1-paddock-stats.vercel.app. Sign in with one click as a demo **Viewer**, **Analyst** or **Admin**.
+
+- Season view: cumulative points by round for every driver or team, with hover/keyboard scrubbing, highlighting, and a table alternative
+- Head-to-head (Analyst): race and qualifying battles, totals, and race-by-race diverging bars for any two drivers
+- Circuit and driver histories; an Admin page with users and data refresh
+- Role-based access: JWT in an httpOnly cookie (Next.js BFF), page gating in `proxy.ts`, and policy-based authorization in the .NET API
+
+See [application-flow.md](application-flow.md) for flows, data flow, state and auth, and [memory.md](memory.md) for decisions and trade-offs.
 
 | Layer | Stack |
 | --- | --- |
@@ -46,10 +53,18 @@ NEXT_PUBLIC_API_URL=http://localhost:5102 npm run dev
 
 ## Tests
 
+The test pyramid, bottom up:
+- **xUnit**: the pure `StatsCalculator`, run against the committed snapshot (computed standings must equal the official totals), plus
+  `WebApplicationFactory` tests for 401/403 on protected endpoints.
+- **Vitest + Testing Library**: reducers, memoized selectors, URL-state parsing, role/permission rules, head-to-head math, colour
+  contrast, and the combobox's keyboard behaviour. Tests query by role and label, like a user would.
+- **Cypress + axe**: main flows (season controls, head-to-head, circuits) and role gating, against `next start` in snapshot mode so
+  runs are deterministic; every key page must pass axe with no serious or critical violations.
+
 ```bash
 dotnet test                      # xUnit: standings math reconciled against official totals
 cd web && npm test               # Vitest: reducers, selectors, URL state, h2h logic, combobox
-cd web && npm run e2e:ci         # Cypress against `next start` (snapshot mode), with axe checks
+cd web && npm run build && npm run e2e:ci   # Cypress against `next start` (snapshot mode), with axe checks
 ```
 
 Unofficial fan project. Data: Jolpica-F1 (Ergast-compatible). Not affiliated with Formula 1 or the FIA.
