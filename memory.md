@@ -4,7 +4,11 @@ Read this and `application-flow.md` before changing anything.
 
 ## Status (2026-10-16)
 
-- Live: https://f1-paddock-stats.vercel.app (snapshot mode). Repo: https://github.com/kennjaramilla/f1-paddock-stats (public).
+- Live: https://kenn-f1-paddock-stats.vercel.app (snapshot mode; production domain we own, verified headless with all 3 roles).
+  `f1-paddock-stats.vercel.app` also points at our project. Repo: https://github.com/kennjaramilla/f1-paddock-stats (public).
+- Vercel is git-connected (root directory `web`): every push to `main` deploys to production. `AUTH_SECRET` is set for Production + Preview.
+- Docker: `docker compose up --build` → web :3102 (live mode) + API :5102, verified end to end (Viewer 403 on head-to-head,
+  Analyst gets results through the JWT-protected endpoint, anonymous API call → 401).
 - Built for an interview demo (React + C#/.NET role at a healthcare startup on AWS serverless). Code quality gets walked through, so
   keep it idiomatic and small.
 - Tests: xUnit 17 (calculator + API auth), Vitest 48, Cypress 15 (all green locally). CI runs dotnet build/test and
@@ -32,8 +36,8 @@ web/                   Next.js 16 (App Router), proxy.ts, RTK store in src/store
 - **Refresh data:** `dotnet run --project api -- ingest 2014 2026`, then `dotnet run --project api -- export web/public/data`, then
   copy `api/paddock.db` over `api/seed/paddock.db` and commit both. The export log lists any season whose computed standings don't match
   the official ones (currently none).
-- **Redeploy web:** `cd web && npx vercel@latest deploy --prod --yes` (project `f1-paddock-stats`, account kennjaramilla).
-  `AUTH_SECRET` is set in Vercel for production and preview.
+- **Redeploy web:** push to `main` (git integration). Manual: `npx vercel@latest deploy --prod --yes` from the repo root, because the
+  project's root directory is `web`.
 - **Live mode locally:** run the API on :5102 (`ASPNETCORE_URLS=http://localhost:5102 dotnet run --no-launch-profile` in `api/`), then
   `NEXT_PUBLIC_API_URL=http://localhost:5102 npm run dev` in `web/`. In dev, both sides fall back to the same dev secret.
 - **Tests:** `dotnet test`; `cd web && npm test`; `cd web && npm run e2e:ci` (builds must exist: `npm run build` first).
@@ -83,6 +87,8 @@ web/                   Next.js 16 (App Router), proxy.ts, RTK store in src/store
 - `fetchBaseQuery` reports a missing snapshot file as `PARSING_ERROR` with `originalStatus: 404` (the 404 page is HTML); `isNotFound` handles both.
 - zsh: never name a shell loop variable `path` (it overwrites `$PATH`).
 - `dotnet run` uses launchSettings unless `--no-launch-profile`, which ignores `ASPNETCORE_URLS`.
+- Vercel: a custom `*.vercel.app` alias is behind deployment protection (SSO) until it's added as a project domain.
+- Docker web image: `NEXT_PUBLIC_API_URL` is a build arg (inlined); server-side calls use `API_INTERNAL_URL=http://api:8080`.
 
 ## Next steps (cut for time; roadmap talking points)
 

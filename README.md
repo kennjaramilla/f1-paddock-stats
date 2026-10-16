@@ -2,7 +2,7 @@
 
 Formula 1 championship analytics since 2014: how every title fight unfolded round by round, head-to-head driver comparisons, and circuit histories.
 
-**Live demo:** https://f1-paddock-stats.vercel.app. Sign in with one click as a demo **Viewer**, **Analyst** or **Admin**.
+**Live demo:** https://kenn-f1-paddock-stats.vercel.app. Sign in with one click as a demo **Viewer**, **Analyst** or **Admin**.
 
 - Season view: cumulative points by round for every driver or team, with hover/keyboard scrubbing, highlighting, and a table alternative
 - Head-to-head (Analyst): race and qualifying battles, totals, and race-by-race diverging bars for any two drivers
@@ -34,6 +34,15 @@ The .NET API is the source of truth. Its `export` command writes every GET respo
 (`/api/seasons/2021` → `/data/seasons/2021.json`). The web app's RTK Query `baseQuery` reads from the API when
 `NEXT_PUBLIC_API_URL` is set and from that snapshot otherwise. Vercel can't host .NET, so the public demo runs in snapshot mode;
 locally you can run it against the live API.
+
+## Run with Docker (live mode)
+
+```bash
+docker compose up --build      # web http://localhost:3102, API http://localhost:5102 (docs at /scalar/v1)
+```
+
+The API starts from the committed seed database (no Jolpica calls at boot) on a named volume, and the web app runs in live mode
+through its `/api/live` proxy. Set `AUTH_SECRET` in a `.env` file to override the shared demo JWT secret.
 
 ## Run locally
 
