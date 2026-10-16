@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  --bg: #f6f5f1;
+  --surface: #ffffff;
+  --surface-2: #f0eee8;
+  --ink: #15161a;
+  --ink-2: #44454f;
+  --ink-3: #62636e;
+  --line: #e2dfd6;
+  --line-strong: #c9c5b9;
+  --accent: #c8102e;
+  --accent-ink: #ffffff;
+  --accent-soft: #fbe7ea;
+  --focus: #1d4ed8;
+  --good: #15803d;
+  --warn: #b45309;
+  --chart-grid: #ebe8e0;
+  --chart-bg: #ffffff;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #0e0f12;
+  --surface: #16171c;
+  --surface-2: #1e2027;
+  --ink: #f1f1f4;
+  --ink-2: #c3c4cc;
+  --ink-3: #9a9ba6;
+  --line: #2a2c34;
+  --line-strong: #3a3d47;
+  --accent: #ff4d5e;
+  --accent-ink: #16171c;
+  --accent-soft: #3a1a1f;
+  --focus: #7aa2ff;
+  --good: #4ade80;
+  --warn: #fbbf24;
+  --chart-grid: #24262d;
+  --chart-bg: #16171c;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-focus: var(--focus);
+  --color-good: var(--good);
+  --color-warn: var(--warn);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-barlow);
+}
+
+html { background: var(--bg); }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-feature-settings: "tnum" 1, "cv11" 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+.tabular { font-variant-numeric: tabular-nums; }
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--line) 50%, var(--surface-2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+.sr-only-focusable:not(:focus) {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
