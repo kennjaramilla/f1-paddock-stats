@@ -1,4 +1,6 @@
-describe('Head-to-head', () => {
+describe('Head-to-head (analyst)', () => {
+  beforeEach(() => cy.login('analyst'));
+
   it('picks two drivers with the keyboard only', () => {
     cy.visit('/compare');
     cy.contains('Choose two drivers').should('be.visible');

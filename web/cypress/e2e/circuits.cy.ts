@@ -1,4 +1,6 @@
 describe('Circuits', () => {
+  beforeEach(() => cy.login('viewer'));
+
   it('filters and opens a circuit', () => {
     cy.visit('/circuits');
     cy.get('[data-testid=circuit-search]').type('monaco');
@@ -18,6 +20,8 @@ describe('Circuits', () => {
 });
 
 describe('Drivers', () => {
+  beforeEach(() => cy.login('viewer'));
+
   it('opens a driver career page', () => {
     cy.visit('/drivers?q=verstappen');
     cy.contains('a', 'Max Verstappen').click();

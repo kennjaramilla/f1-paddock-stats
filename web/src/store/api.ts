@@ -47,4 +47,8 @@ export const {
   useGetCircuitsQuery, useGetCircuitQuery, useGetSeasonResultsQuery, useRefreshSeasonMutation,
 } = paddockApi;
 
-export const isNotFound = (error: unknown) => (error as FetchBaseQueryError | undefined)?.status === 404;
+/** 404 from the API, or a missing snapshot file (an HTML 404 page, which fails JSON parsing). */
+export const isNotFound = (error: unknown) => {
+  const e = error as FetchBaseQueryError | undefined;
+  return e?.status === 404 || (e?.status === 'PARSING_ERROR' && e.originalStatus === 404);
+};

@@ -27,7 +27,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur supports-[backdrop-filter]:bg-bg/70">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2" aria-label="Paddock Stats home">
+        <Link href="/" className="flex items-center gap-2">
           <Logo />
           <span className="font-display text-xl font-bold uppercase tracking-wide">
             Paddock<span className="text-accent">Stats</span>

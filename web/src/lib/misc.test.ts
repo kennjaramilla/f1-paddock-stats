@@ -61,3 +61,13 @@ describe('buildSeries', () => {
     expect(buildSeries(season, { view: 'constructors', top: '10' }, 'dark').map((s) => s.label)).toEqual(['Red Bull']);
   });
 });
+
+describe('isNotFound', () => {
+  it('treats API 404s and missing snapshot files as not found', async () => {
+    const { isNotFound } = await import('@/store/api');
+    expect(isNotFound({ status: 404, data: null })).toBe(true);
+    expect(isNotFound({ status: 'PARSING_ERROR', originalStatus: 404, data: '<html>', error: 'x' })).toBe(true);
+    expect(isNotFound({ status: 500, data: null })).toBe(false);
+    expect(isNotFound(undefined)).toBe(false);
+  });
+});

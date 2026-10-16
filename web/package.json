@@ -10,7 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "cypress run",
-    "e2e:ci": "start-server-and-test \"next start -p 3105\" http://localhost:3105 \"cypress run\"",
+    "e2e:ci": "AUTH_SECRET=e2e-only-secret-0123456789abcdef0123 start-server-and-test \"next start -p 3105\" http://localhost:3105 \"cypress run\"",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
