@@ -1,5 +1,5 @@
 'use client';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { ROLE_LABEL, safeNext, type Role } from '@/lib/auth/roles';
 import { useLoginMutation } from '@/store/authApi';
@@ -11,7 +11,6 @@ const DEMO_ACCOUNTS: { role: Role; email: string; password: string; can: string 
 ];
 
 export function LoginView() {
-  const router = useRouter();
   const next = safeNext(useSearchParams().get('next'));
   const [login, { isLoading }] = useLoginMutation();
   const [email, setEmail] = useState('');
@@ -25,8 +24,8 @@ export function LoginView() {
       setError((result.error as { data?: { error?: string } }).data?.error ?? 'Sign in failed. Please try again.');
       return;
     }
-    router.replace(next);
-    router.refresh();
+    // Full navigation: the client router may hold a cached pre-login redirect for this route.
+    window.location.assign(next);
   }
 
   return (
