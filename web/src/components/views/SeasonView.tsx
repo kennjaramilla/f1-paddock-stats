@@ -9,6 +9,7 @@ import { chartModeChanged, highlightToggled, highlighted, standingsViewChanged, 
 import type { SeasonDetail } from '@/lib/types';
 import { ProgressionChart } from '../ProgressionChart';
 import { useResolvedTheme } from '../Providers';
+import { GatedLink } from '../RoleGate';
 import { Card, EmptyState, ErrorState, PageSkeleton, Segmented, Stat, TeamSwatch } from '../ui';
 import { CumulativeTable } from '../CumulativeTable';
 
@@ -247,10 +248,10 @@ function FocusPanel({ season, id, view, onClear }: { season: SeasonDetail; id: s
         </dl>
         <div className="ml-auto flex flex-wrap gap-2">
           {mate && (
-            <Link href={`/compare?a=${d.driverId}&b=${mate.driverId}&from=${season.year}&to=${season.year}`}
+            <GatedLink role="analyst" href={`/compare?a=${d.driverId}&b=${mate.driverId}&from=${season.year}&to=${season.year}`}
               className="rounded-lg bg-ink px-3 py-2 text-sm font-medium text-bg hover:opacity-90">
               Compare with teammate {driverLabel(mate)} →
-            </Link>
+            </GatedLink>
           )}
           <Link href={`/drivers/${d.driverId}`} className="rounded-lg border border-line px-3 py-2 text-sm font-medium hover:bg-surface-2">Career</Link>
           <button onClick={onClear} className="rounded-lg px-3 py-2 text-sm text-ink-2 hover:text-ink">Clear</button>
@@ -269,9 +270,9 @@ function FocusPanel({ season, id, view, onClear }: { season: SeasonDetail; id: s
       </div>
       <div className="ml-auto flex gap-2">
         {a && b && (
-          <Link href={`/compare?a=${a}&b=${b}&from=${season.year}&to=${season.year}`} className="rounded-lg bg-ink px-3 py-2 text-sm font-medium text-bg hover:opacity-90">
+          <GatedLink role="analyst" href={`/compare?a=${a}&b=${b}&from=${season.year}&to=${season.year}`} className="rounded-lg bg-ink px-3 py-2 text-sm font-medium text-bg hover:opacity-90">
             Compare drivers →
-          </Link>
+          </GatedLink>
         )}
         <button onClick={onClear} className="rounded-lg px-3 py-2 text-sm text-ink-2 hover:text-ink">Clear</button>
       </div>

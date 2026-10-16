@@ -15,10 +15,11 @@ export const paddockApi = createApi({
   baseQuery: apiOrSnapshot,
   // Historical data doesn't change while the app is open.
   keepUnusedDataFor: 30 * 60,
+  tagTypes: ['Season'],
   endpoints: (build) => ({
     getMeta: build.query<Meta, void>({ query: () => 'meta' }),
     getSeasons: build.query<SeasonIndexItem[], void>({ query: () => 'seasons' }),
-    getSeason: build.query<SeasonDetail, number>({ query: (year) => `seasons/${year}` }),
+    getSeason: build.query<SeasonDetail, number>({ query: (year) => `seasons/${year}`, providesTags: (_r, _e, year) => [{ type: 'Season', id: year }] }),
     getDrivers: build.query<DriverIndexItem[], void>({ query: () => 'drivers' }),
     getCircuits: build.query<CircuitIndexItem[], void>({ query: () => 'circuits' }),
     getCircuit: build.query<CircuitDetail, string>({ query: (id) => `circuits/${id}` }),
@@ -30,12 +31,20 @@ export const paddockApi = createApi({
         return failed?.error ? { error: failed.error } : { data: responses.map((r) => r.data as SeasonResults) };
       },
     }),
+    /** Admin-only, live mode: re-ingests a season from Jolpica on the .NET side. */
+    refreshSeason: build.mutation<void, number>({
+      queryFn: async (year, api, extra) => {
+        const result = await rawBaseQuery({ url: `/api/live/admin/seasons/${year}/refresh`, method: 'POST' }, api, extra);
+        return result.error ? { error: result.error } : { data: undefined };
+      },
+      invalidatesTags: (_r, _e, year) => [{ type: 'Season', id: year }],
+    }),
   }),
 });
 
 export const {
   useGetMetaQuery, useGetSeasonsQuery, useGetSeasonQuery, useGetDriversQuery,
-  useGetCircuitsQuery, useGetCircuitQuery, useGetSeasonResultsQuery,
+  useGetCircuitsQuery, useGetCircuitQuery, useGetSeasonResultsQuery, useRefreshSeasonMutation,
 } = paddockApi;
 
 export const isNotFound = (error: unknown) => (error as FetchBaseQueryError | undefined)?.status === 404;

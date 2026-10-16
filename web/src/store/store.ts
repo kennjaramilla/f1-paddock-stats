@@ -1,12 +1,14 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { paddockApi } from './api';
+import { authApi } from './authApi';
 import { preferencesListener } from './preferences';
 import { uiSlice } from './uiSlice';
 
 const rootReducer = combineReducers({
   [uiSlice.name]: uiSlice.reducer,
   [paddockApi.reducerPath]: paddockApi.reducer,
+  [authApi.reducerPath]: authApi.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -16,7 +18,7 @@ export const makeStore = (preloadedState?: Partial<RootState>) =>
   configureStore({
     reducer: rootReducer,
     preloadedState,
-    middleware: (getDefault) => getDefault().prepend(preferencesListener.middleware).concat(paddockApi.middleware),
+    middleware: (getDefault) => getDefault().prepend(preferencesListener.middleware).concat(paddockApi.middleware, authApi.middleware),
   });
 
 export type AppStore = ReturnType<typeof makeStore>;

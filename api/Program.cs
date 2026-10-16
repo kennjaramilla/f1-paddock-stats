@@ -35,6 +35,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks().AddDbContextCheck<PaddockDbContext>();
 builder.Services.AddApiRateLimiting();
+builder.Services.AddPaddockAuth(builder.Configuration);
 builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
     .WithOrigins(builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? [])
     .WithMethods("GET", "POST", "DELETE")
@@ -56,13 +57,15 @@ app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseCors();
 app.UseRateLimiter();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapOpenApi();
 app.MapScalarApiReference();
 app.MapGet("/", () => Results.Redirect("/scalar/v1")).ExcludeFromDescription();
 app.MapHealthChecks("/health");
 app.MapPaddockApi();
-if (app.Environment.IsDevelopment()) app.MapAdminApi(); // until role-based auth protects it
+app.MapAdminApi();
 
 app.Run();
 

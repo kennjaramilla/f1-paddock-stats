@@ -7,10 +7,10 @@ import type { SeasonDetail } from './types';
 
 describe('resolveUrl', () => {
   it('maps routes to the static snapshot by default', () => {
-    expect(resolveUrl('seasons/2021', undefined)).toBe('/data/seasons/2021.json');
+    expect(resolveUrl('seasons/2021', false)).toBe('/data/seasons/2021.json');
   });
-  it('maps routes to the live API when configured', () => {
-    expect(resolveUrl('/circuits/monza/', 'http://localhost:5102')).toBe('http://localhost:5102/api/circuits/monza');
+  it('maps routes to the same-origin API proxy in live mode', () => {
+    expect(resolveUrl('/circuits/monza/', true)).toBe('/api/live/circuits/monza');
   });
 });
 

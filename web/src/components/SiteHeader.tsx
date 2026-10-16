@@ -1,20 +1,29 @@
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { dataMode } from '@/lib/api';
+import { ROLE_LABEL, hasRole, type Role } from '@/lib/auth/roles';
+import { useLogoutMutation, useSession } from '@/store/authApi';
+import { LockIcon } from './RoleGate';
 import { useAppDispatch } from '@/store/store';
 import { themeChanged } from '@/store/uiSlice';
 import { useResolvedTheme } from './Providers';
 
-const NAV = [
-  { href: '/', label: 'Seasons', match: (p: string) => p === '/' || p.startsWith('/season') },
-  { href: '/compare', label: 'Head-to-head', match: (p: string) => p.startsWith('/compare') },
-  { href: '/circuits', label: 'Circuits', match: (p: string) => p.startsWith('/circuits') },
-  { href: '/drivers', label: 'Drivers', match: (p: string) => p.startsWith('/drivers') },
+interface NavItem { href: string; label: string; role: Role; hideWhenLocked?: boolean; match: (p: string) => boolean }
+
+const NAV: NavItem[] = [
+  { href: '/', label: 'Seasons', role: 'viewer', match: (p) => p === '/' || p.startsWith('/season') },
+  { href: '/compare', label: 'Head-to-head', role: 'analyst', match: (p) => p.startsWith('/compare') },
+  { href: '/circuits', label: 'Circuits', role: 'viewer', match: (p) => p.startsWith('/circuits') },
+  { href: '/drivers', label: 'Drivers', role: 'viewer', match: (p) => p.startsWith('/drivers') },
+  { href: '/admin', label: 'Admin', role: 'admin', hideWhenLocked: true, match: (p) => p.startsWith('/admin') },
 ];
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const { user } = useSession();
+  // Locked items stay visible (with a lock) so features are discoverable; admin stays hidden.
+  const items = user ? NAV.filter((n) => hasRole(user.role, n.role) || !n.hideWhenLocked) : [];
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur supports-[backdrop-filter]:bg-bg/70">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6">
@@ -26,46 +35,70 @@ export function SiteHeader() {
         </Link>
         <nav aria-label="Primary" className="ml-2 hidden md:block">
           <ul className="flex items-center gap-1">
-            {NAV.map((n) => {
-              const active = n.match(pathname);
-              return (
-                <li key={n.href}>
-                  <Link
-                    href={n.href}
-                    aria-current={active ? 'page' : undefined}
-                    className={`rounded-md px-3 py-2 text-sm font-medium ${active ? 'bg-surface-2 text-ink' : 'text-ink-2 hover:text-ink'}`}
-                  >
-                    {n.label}
-                  </Link>
-                </li>
-              );
-            })}
+            {items.map((n) => (
+              <li key={n.href}>
+                <NavLink item={n} role={user!.role} active={n.match(pathname)}
+                  className={(active) => `inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium ${active ? 'bg-surface-2 text-ink' : 'text-ink-2 hover:text-ink'}`} />
+              </li>
+            ))}
           </ul>
         </nav>
         <div className="ml-auto flex items-center gap-2">
           <ModeBadge />
+          <UserMenu />
           <ThemeToggle />
         </div>
       </div>
       <nav aria-label="Primary mobile" className="border-t border-line md:hidden">
         <ul className="mx-auto flex max-w-7xl overflow-x-auto px-2">
-          {NAV.map((n) => {
-            const active = n.match(pathname);
-            return (
-              <li key={n.href} className="shrink-0">
-                <Link
-                  href={n.href}
-                  aria-current={active ? 'page' : undefined}
-                  className={`block border-b-2 px-3 py-2.5 text-sm font-medium ${active ? 'border-accent text-ink' : 'border-transparent text-ink-2'}`}
-                >
-                  {n.label}
-                </Link>
-              </li>
-            );
-          })}
+          {items.map((n) => (
+            <li key={n.href} className="shrink-0">
+              <NavLink item={n} role={user!.role} active={n.match(pathname)}
+                className={(active) => `flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-sm font-medium ${active ? 'border-accent text-ink' : 'border-transparent text-ink-2'}`} />
+            </li>
+          ))}
         </ul>
       </nav>
     </header>
+  );
+}
+
+function NavLink({ item, role, active, className }: { item: NavItem; role: Role; active: boolean; className: (active: boolean) => string }) {
+  if (!hasRole(role, item.role)) {
+    return (
+      <span className={`${className(false)} cursor-not-allowed opacity-60`} title={`Requires ${ROLE_LABEL[item.role]} role`} aria-disabled="true">
+        <LockIcon />
+        {item.label}
+        <span className="sr-only">(requires {ROLE_LABEL[item.role]} role)</span>
+      </span>
+    );
+  }
+  return <Link href={item.href} aria-current={active ? 'page' : undefined} className={className(active)}>{item.label}</Link>;
+}
+
+function UserMenu() {
+  const { user } = useSession();
+  const [logout] = useLogoutMutation();
+  const router = useRouter();
+  if (!user) return null;
+  return (
+    <div className="flex items-center gap-2">
+      <span className="hidden text-right leading-tight sm:block">
+        <span className="block text-sm font-medium">{user.name}</span>
+        <span className="block text-[11px] font-semibold uppercase tracking-wider text-ink-3" data-testid="role-badge">{ROLE_LABEL[user.role]}</span>
+      </span>
+      <span className="rounded-full bg-surface-2 px-2 py-0.5 text-[11px] font-semibold uppercase sm:hidden">{ROLE_LABEL[user.role]}</span>
+      <button
+        onClick={async () => {
+          await logout();
+          router.replace('/login');
+          router.refresh();
+        }}
+        className="rounded-lg border border-line px-2.5 py-1.5 text-sm text-ink-2 hover:text-ink"
+      >
+        Sign out
+      </button>
+    </div>
   );
 }
 

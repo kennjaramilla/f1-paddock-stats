@@ -8,6 +8,7 @@ import { useGetDriversQuery } from '@/store/api';
 import { useAppDispatch } from '@/store/store';
 import { driverFollowed } from '@/store/uiSlice';
 import { useResolvedTheme } from '../Providers';
+import { GatedLink } from '../RoleGate';
 import { Card, EmptyState, ErrorState, PageSkeleton, Stat, TeamSwatch } from '../ui';
 
 export function DriverDetailView() {
@@ -89,9 +90,9 @@ export function DriverDetailView() {
                     <td className="px-2 py-2 text-right">{s.wins || ''}</td>
                     <td className="px-4 py-2 sm:px-2">
                       {mate ? (
-                        <Link href={`/compare?a=${d.driverId}&b=${mate.driverId}&from=${s.season}&to=${s.season}`} className="text-accent hover:underline">
+                        <GatedLink role="analyst" href={`/compare?a=${d.driverId}&b=${mate.driverId}&from=${s.season}&to=${s.season}`} className="text-accent hover:underline">
                           vs {driverLabel({ code: mate.code, name: mate.familyName })} →
-                        </Link>
+                        </GatedLink>
                       ) : '—'}
                     </td>
                   </tr>

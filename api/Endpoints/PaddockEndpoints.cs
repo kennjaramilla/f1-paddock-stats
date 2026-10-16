@@ -16,7 +16,8 @@ public static class PaddockEndpoints
         api.MapGet("/seasons/{year:int}", async (int year, StatsService s, CancellationToken ct) =>
             await s.GetSeasonAsync(year, ct) is { } season ? Results.Ok(season) : Results.NotFound());
         api.MapGet("/seasons/{year:int}/results", async (int year, StatsService s, CancellationToken ct) =>
-            await s.GetSeasonResultsAsync(year, ct) is { } results ? Results.Ok(results) : Results.NotFound());
+            await s.GetSeasonResultsAsync(year, ct) is { } results ? Results.Ok(results) : Results.NotFound())
+            .RequireAuthorization(Policies.Analyst); // race-by-race data powers head-to-head
         api.MapGet("/drivers", (StatsService s, CancellationToken ct) => s.GetDriversAsync(ct));
         api.MapGet("/constructors", (StatsService s, CancellationToken ct) => s.GetConstructorsAsync(ct));
         api.MapGet("/circuits", (StatsService s, CancellationToken ct) => s.GetCircuitsAsync(ct));
@@ -28,7 +29,7 @@ public static class PaddockEndpoints
 
     public static RouteGroupBuilder MapAdminApi(this IEndpointRouteBuilder app)
     {
-        var admin = app.MapGroup("/api/admin").WithTags("Admin");
+        var admin = app.MapGroup("/api/admin").WithTags("Admin").RequireAuthorization(Policies.Admin);
 
         admin.MapPost("/seasons/{year:int}/refresh", async (int year, IngestionService ingest, StatsService stats, CancellationToken ct) =>
         {
