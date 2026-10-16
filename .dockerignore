@@ -1,0 +1,5 @@
+**/bin
+**/obj
+api/paddock.db
+web/node_modules
+web/.next

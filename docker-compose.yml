@@ -1,0 +1,33 @@
+# Live mode locally: the web app talks to the .NET API (through its /api/live proxy).
+# Override the shared JWT secret with AUTH_SECRET in a .env file for anything beyond a local demo.
+x-auth-secret: &auth-secret ${AUTH_SECRET:-local-docker-secret-change-me-0123456789}
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    ports:
+      - "5102:8080"
+    environment:
+      Auth__Secret: *auth-secret
+      Cors__Origins__0: http://localhost:3102
+    volumes:
+      - paddock-data:/data
+
+  web:
+    build:
+      context: web
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:5102
+    ports:
+      - "3102:3000"
+    environment:
+      AUTH_SECRET: *auth-secret
+      # Server-side calls go container-to-container.
+      API_INTERNAL_URL: http://api:8080
+    depends_on:
+      - api
+
+volumes:
+  paddock-data:
