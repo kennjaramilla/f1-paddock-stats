@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/api/">
+    <Project Path="api/PaddockStats.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PaddockStats.Tests/PaddockStats.Tests.csproj" />
+  </Folder>
+</Solution>
