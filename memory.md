@@ -94,7 +94,8 @@ web/                   Next.js 16 (App Router), proxy.ts, RTK store in src/store
 
 - Saved comparisons owned by users: resource-based authorization (owner check, 404 for others' private items), revocable share links,
   soft delete, "download my data". Needs a writable DB (Postgres) and a real user store.
-- Audit log of sign-ins and admin actions (with masked emails), plus CSV export of any chart's table.
+- Audit log of sign-ins and admin actions (with masked emails).
+- "Download CSV" buttons on the standings and circuit tables. The API side is done: `/api/seasons/{year}/drivers.csv`, `/constructors.csv` and `/api/circuits/{id}/races.csv` (`api/Csv/CsvTable.cs`: RFC 4180 quoting, a leading `'` neutralises spreadsheet formulas, UTF-8 BOM so Excel reads accents). Snapshot mode would need the CSVs exported alongside the JSON.
 - AWS deploy: `Amazon.Lambda.AspNetCoreServer.Hosting` is already wired (`AddAWSLambdaHosting(HttpApi)`; plain Kestrel locally).
   Next is a SAM template (HttpApi + function, read-only bundled SQLite), with Cognito replacing the shared-secret JWT.
 - Observability: OpenTelemetry traces/metrics (CloudWatch/X-Ray), web-vitals reporting, an error boundary that reports.
