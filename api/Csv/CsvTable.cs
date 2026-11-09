@@ -35,6 +35,8 @@ public static class CsvTable
         return text.IndexOfAny([',', '"', '\r', '\n']) >= 0 ? $"\"{text.Replace("\"", "\"\"")}\"" : text;
     }
 
-    public static IResult File(string csv, string fileName) =>
-        Results.File(Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(csv)).ToArray(), "text/csv; charset=utf-8", fileName);
+    /// <summary>UTF-8 with a BOM, so Excel reads accented names correctly.</summary>
+    public static byte[] Bytes(string csv) => Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(csv)).ToArray();
+
+    public static IResult File(string csv, string fileName) => Results.File(Bytes(csv), "text/csv; charset=utf-8", fileName);
 }

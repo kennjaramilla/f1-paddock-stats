@@ -15,13 +15,13 @@ async function forward(request: Request, { params }: { params: Promise<{ path: s
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   const upstream = await fetch(`${API_URL}/api/${path.map(encodeURIComponent).join('/')}`, {
     method: request.method,
-    headers: { Accept: 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    headers: { Accept: request.headers.get('Accept') ?? 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
     cache: 'no-store',
   });
-  return new NextResponse(upstream.status === 204 ? null : upstream.body, {
-    status: upstream.status,
-    headers: { 'Content-Type': upstream.headers.get('Content-Type') ?? 'application/json' },
-  });
+  const headers: Record<string, string> = { 'Content-Type': upstream.headers.get('Content-Type') ?? 'application/json' };
+  const disposition = upstream.headers.get('Content-Disposition');
+  if (disposition) headers['Content-Disposition'] = disposition;
+  return new NextResponse(upstream.status === 204 ? null : upstream.body, { status: upstream.status, headers });
 }
 
 export { forward as GET, forward as POST };

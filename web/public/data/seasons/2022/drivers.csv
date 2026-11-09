@@ -1,0 +1,23 @@
+﻿Position,Driver,Code,Nationality,Team,Points,Wins,Podiums,Poles,Starts,Best finish
+1,Max Verstappen,VER,Dutch,Red Bull,454,15,17,8,22,1
+2,Charles Leclerc,LEC,Monegasque,Ferrari,308,3,11,9,22,1
+3,Sergio Pérez,PER,Mexican,Red Bull,305,2,11,1,22,1
+4,George Russell,RUS,British,Mercedes,275,1,8,1,22,1
+5,Carlos Sainz,SAI,Spanish,Ferrari,246,1,9,2,22,1
+6,Lewis Hamilton,HAM,British,Mercedes,240,0,9,0,22,2
+7,Lando Norris,NOR,British,McLaren,122,0,1,0,22,3
+8,Esteban Ocon,OCO,French,Alpine F1 Team,92,0,0,0,22,4
+9,Fernando Alonso,ALO,Spanish,Alpine F1 Team,81,0,0,0,22,5
+10,Valtteri Bottas,BOT,Finnish,Alfa Romeo,49,0,0,0,22,5
+11,Daniel Ricciardo,RIC,Australian,McLaren,37,0,0,0,22,5
+12,Sebastian Vettel,VET,German,Aston Martin,37,0,0,0,20,6
+13,Kevin Magnussen,MAG,Danish,Haas F1 Team,25,0,0,1,22,5
+14,Pierre Gasly,GAS,French,AlphaTauri,23,0,0,0,22,5
+15,Lance Stroll,STR,Canadian,Aston Martin,18,0,0,0,22,6
+16,Mick Schumacher,MSC,German,Haas F1 Team,12,0,0,0,22,6
+17,Yuki Tsunoda,TSU,Japanese,AlphaTauri,12,0,0,0,22,7
+18,Guanyu Zhou,ZHO,Chinese,Alfa Romeo,6,0,0,0,22,8
+19,Alexander Albon,ALB,Thai,Williams,4,0,0,0,21,9
+20,Nicholas Latifi,LAT,Canadian,Williams,2,0,0,0,22,9
+21,Nyck de Vries,DEV,Dutch,Williams,2,0,0,0,1,9
+22,Nico Hülkenberg,HUL,German,Aston Martin,0,0,0,0,2,12

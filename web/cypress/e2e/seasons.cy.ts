@@ -41,6 +41,14 @@ describe('Seasons (viewer)', () => {
     cy.get('[aria-live=polite]').should('contain', 'Round 21');
   });
 
+  it('downloads the standings shown as CSV', () => {
+    cy.visit('/season/2021');
+    cy.get('[data-cy=csv-download]')
+      .should('have.attr', 'download', 'f1-2021-drivers.csv')
+      .invoke('attr', 'href')
+      .then((href) => cy.request(String(href)).its('body').should('contain', '1,Max Verstappen,VER,'));
+  });
+
   it('shows a friendly empty state for unknown seasons', () => {
     cy.visit('/season/1950');
     cy.contains('Season not found').should('be.visible');

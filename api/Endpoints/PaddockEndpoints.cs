@@ -33,35 +33,19 @@ public static class PaddockEndpoints
     private static void MapCsv(RouteGroupBuilder api)
     {
         api.MapGet("/seasons/{year:int}/drivers.csv", async (int year, StatsService s, CancellationToken ct) =>
-                await s.GetSeasonAsync(year, ct) is { } season
-                    ? CsvTable.File(CsvTable.Write(
-                        ["Position", "Driver", "Code", "Nationality", "Team", "Points", "Wins", "Podiums", "Poles", "Starts", "Best finish"],
-                        season.Drivers.OrderBy(d => d.Position).Select(d => (IReadOnlyList<object?>)
-                            [d.Position, d.Name, d.Code, d.Nationality, d.ConstructorName, d.Points, d.Wins, d.Podiums, d.Poles, d.Starts, d.BestFinish])),
-                        $"f1-{year}-drivers.csv")
-                    : Results.NotFound())
+                await s.GetSeasonAsync(year, ct) is { } season ? Download(CsvExports.Drivers(year, season)) : Results.NotFound())
             .WithSummary("Drivers' standings as CSV");
 
         api.MapGet("/seasons/{year:int}/constructors.csv", async (int year, StatsService s, CancellationToken ct) =>
-                await s.GetSeasonAsync(year, ct) is { } season
-                    ? CsvTable.File(CsvTable.Write(
-                        ["Position", "Team", "Points", "Wins"],
-                        season.Constructors.OrderBy(c => c.Position).Select(c => (IReadOnlyList<object?>)
-                            [c.Position, c.Name, c.Points, c.Wins])),
-                        $"f1-{year}-constructors.csv")
-                    : Results.NotFound())
+                await s.GetSeasonAsync(year, ct) is { } season ? Download(CsvExports.Constructors(year, season)) : Results.NotFound())
             .WithSummary("Constructors' standings as CSV");
 
         api.MapGet("/circuits/{id}/races.csv", async (string id, StatsService s, CancellationToken ct) =>
-                await s.GetCircuitAsync(id, ct) is { } circuit
-                    ? CsvTable.File(CsvTable.Write(
-                        ["Season", "Round", "Race", "Winner", "Team", "Grid", "Pole", "Won from pole"],
-                        circuit.Races.OrderByDescending(r => r.Season).Select(r => (IReadOnlyList<object?>)
-                            [r.Season, r.Round, r.RaceName, r.Winner.Name, r.WinnerTeam.Name, r.WinnerGrid, r.Pole?.Name, r.WonFromPole])),
-                        $"f1-{circuit.CircuitId}-winners.csv")
-                    : Results.NotFound())
+                await s.GetCircuitAsync(id, ct) is { } circuit ? Download(CsvExports.CircuitRaces(circuit)) : Results.NotFound())
             .WithSummary("Every race and winner at a circuit as CSV");
     }
+
+    private static IResult Download(CsvExports.CsvFile file) => CsvTable.File(file.Csv, file.FileName);
 
     public static RouteGroupBuilder MapAdminApi(this IEndpointRouteBuilder app)
     {

@@ -10,6 +10,10 @@ describe('Circuits', () => {
     cy.contains('h1', 'Circuit de Monaco');
     cy.contains('h2', 'Every winner');
     cy.contains('Pole to win');
+    cy.get('[data-cy=csv-download]')
+      .should('have.attr', 'aria-label', 'Download winners at Circuit de Monaco as CSV')
+      .invoke('attr', 'href')
+      .then((href) => cy.request(String(href)).its('body').should('contain', 'Season,Round,Race,Winner'));
     cy.checkPageA11y();
   });
 

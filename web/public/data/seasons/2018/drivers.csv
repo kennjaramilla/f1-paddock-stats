@@ -1,0 +1,21 @@
+﻿Position,Driver,Code,Nationality,Team,Points,Wins,Podiums,Poles,Starts,Best finish
+1,Lewis Hamilton,HAM,British,Mercedes,408,11,17,11,21,1
+2,Sebastian Vettel,VET,German,Ferrari,320,5,12,5,21,1
+3,Kimi Räikkönen,RAI,Finnish,Ferrari,251,1,12,1,21,1
+4,Max Verstappen,VER,Dutch,Red Bull,249,2,11,0,21,1
+5,Valtteri Bottas,BOT,Finnish,Mercedes,247,0,8,2,21,2
+6,Daniel Ricciardo,RIC,Australian,Red Bull,170,2,2,2,21,1
+7,Nico Hülkenberg,HUL,German,Renault,69,0,0,0,21,5
+8,Sergio Pérez,PER,Mexican,Force India,62,0,1,0,21,3
+9,Kevin Magnussen,MAG,Danish,Haas F1 Team,56,0,0,0,21,5
+10,Carlos Sainz,SAI,Spanish,Renault,53,0,0,0,21,5
+11,Fernando Alonso,ALO,Spanish,McLaren,50,0,0,0,21,5
+12,Esteban Ocon,OCO,French,Force India,49,0,0,0,21,6
+13,Charles Leclerc,LEC,Monegasque,Sauber,39,0,0,0,21,6
+14,Romain Grosjean,GRO,French,Haas F1 Team,37,0,0,0,21,4
+15,Pierre Gasly,GAS,French,Toro Rosso,29,0,0,0,21,4
+16,Stoffel Vandoorne,VAN,Belgian,McLaren,12,0,0,0,21,8
+17,Marcus Ericsson,ERI,Swedish,Sauber,9,0,0,0,21,9
+18,Lance Stroll,STR,Canadian,Williams,6,0,0,0,21,8
+19,Brendon Hartley,HAR,New Zealander,Toro Rosso,4,0,0,0,21,9
+20,Sergey Sirotkin,SIR,Russian,Williams,1,0,0,0,21,10
