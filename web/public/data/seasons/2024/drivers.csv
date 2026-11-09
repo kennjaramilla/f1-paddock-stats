@@ -1,0 +1,25 @@
+﻿Position,Driver,Code,Nationality,Team,Points,Wins,Podiums,Poles,Starts,Best finish
+1,Max Verstappen,VER,Dutch,Red Bull,437,9,14,10,24,1
+2,Lando Norris,NOR,British,McLaren,374,4,13,8,24,1
+3,Charles Leclerc,LEC,Monegasque,Ferrari,356,3,13,2,24,1
+4,Oscar Piastri,PIA,Australian,McLaren,292,2,8,0,24,1
+5,Carlos Sainz,SAI,Spanish,Ferrari,290,2,9,1,23,1
+6,George Russell,RUS,British,Mercedes,245,2,4,3,24,1
+7,Lewis Hamilton,HAM,British,Mercedes,223,2,5,0,24,1
+8,Sergio Pérez,PER,Mexican,Red Bull,152,0,4,0,24,2
+9,Fernando Alonso,ALO,Spanish,Aston Martin,70,0,0,0,24,5
+10,Pierre Gasly,GAS,French,Alpine F1 Team,42,0,1,0,24,3
+11,Nico Hülkenberg,HUL,German,Haas F1 Team,41,0,0,0,24,6
+12,Yuki Tsunoda,TSU,Japanese,RB F1 Team,30,0,0,0,24,7
+13,Lance Stroll,STR,Canadian,Aston Martin,24,0,0,0,24,6
+14,Esteban Ocon,OCO,French,Alpine F1 Team,23,0,1,0,23,2
+15,Kevin Magnussen,MAG,Danish,Haas F1 Team,16,0,0,0,22,7
+16,Alexander Albon,ALB,Thai,Williams,12,0,0,0,24,7
+17,Daniel Ricciardo,RIC,Australian,RB F1 Team,12,0,0,0,18,8
+18,Oliver Bearman,BEA,British,Haas F1 Team,7,0,0,0,3,7
+19,Franco Colapinto,COL,Argentine,Williams,5,0,0,0,9,8
+20,Guanyu Zhou,ZHO,Chinese,Sauber,4,0,0,0,24,8
+21,Liam Lawson,LAW,New Zealander,RB F1 Team,4,0,0,0,6,9
+22,Valtteri Bottas,BOT,Finnish,Sauber,0,0,0,0,24,11
+23,Logan Sargeant,SAR,American,Williams,0,0,0,0,14,11
+24,Jack Doohan,DOO,Australian,Alpine F1 Team,0,0,0,0,1,15

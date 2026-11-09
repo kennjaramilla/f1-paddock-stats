@@ -1,6 +1,8 @@
 using System.Net;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 using PaddockStats.Api.Csv;
+using PaddockStats.Api.Export;
 
 namespace PaddockStats.Tests;
 
@@ -70,4 +72,25 @@ public class CsvEndpointTests(AuthorizationTests.ApiFactory factory) : IClassFix
     [InlineData("/api/circuits/nowhere/races.csv")]
     public async Task Unknown_seasons_and_circuits_are_404(string url) =>
         Assert.Equal(HttpStatusCode.NotFound, (await _client.GetAsync(url)).StatusCode);
+
+    [Fact]
+    public async Task The_snapshot_export_writes_the_same_csv_files_as_the_api()
+    {
+        var dir = Path.Combine(Path.GetTempPath(), $"paddock-export-{Guid.NewGuid():N}");
+        try
+        {
+            using (var scope = factory.Services.CreateScope())
+                await scope.ServiceProvider.GetRequiredService<SnapshotExporter>().ExportAsync(dir, CancellationToken.None);
+
+            foreach (var route in new[] { "seasons/2021/drivers.csv", "seasons/2021/constructors.csv", "circuits/monza/races.csv" })
+            {
+                var fromApi = await _client.GetByteArrayAsync($"/api/{route}");
+                Assert.Equal(fromApi, await File.ReadAllBytesAsync(Path.Combine(dir, route)));
+            }
+        }
+        finally
+        {
+            if (Directory.Exists(dir)) Directory.Delete(dir, recursive: true);
+        }
+    }
 }

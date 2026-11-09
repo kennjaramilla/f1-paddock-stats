@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolveUrl } from './api';
+import { csvUrl, resolveUrl } from './api';
 import { driverLabel, fmtPct, fmtPoints, ordinal, shortRace } from './format';
 import { spreadLabels } from './labels';
 import { buildSeries } from './series';
@@ -11,6 +11,13 @@ describe('resolveUrl', () => {
   });
   it('maps routes to the same-origin API proxy in live mode', () => {
     expect(resolveUrl('/circuits/monza/', true)).toBe('/api/live/circuits/monza');
+  });
+});
+
+describe('csvUrl', () => {
+  it('points at the CSV the snapshot export wrote, or the API in live mode', () => {
+    expect(csvUrl('seasons/2021/drivers.csv', false)).toBe('/data/seasons/2021/drivers.csv');
+    expect(csvUrl('/circuits/monza/races.csv', true)).toBe('/api/live/circuits/monza/races.csv');
   });
 });
 

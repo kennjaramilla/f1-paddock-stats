@@ -1,9 +1,13 @@
 using System.Text.Json;
+using PaddockStats.Api.Csv;
 using PaddockStats.Api.Stats;
 
 namespace PaddockStats.Api.Export;
 
-/// <summary>Writes every GET response to /data/{route}.json so the web app can run without the API.</summary>
+/// <summary>
+/// Writes every GET response to /data/{route}.json so the web app can run without the API,
+/// plus the CSV downloads at their API paths (/data/seasons/2021/drivers.csv).
+/// </summary>
 public class SnapshotExporter(StatsService stats, ILogger<SnapshotExporter> logger)
 {
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
@@ -20,6 +24,8 @@ public class SnapshotExporter(StatsService stats, ILogger<SnapshotExporter> logg
             if (!season.Reconciliation.Matches) unreconciled.Add(year);
             await WriteAsync(outDir, $"seasons/{year}", season, ct);
             await WriteAsync(outDir, $"seasons/{year}/results", await stats.GetSeasonResultsAsync(year, ct), ct);
+            await WriteCsvAsync(outDir, $"seasons/{year}/drivers.csv", CsvExports.Drivers(year, season), ct);
+            await WriteCsvAsync(outDir, $"seasons/{year}/constructors.csv", CsvExports.Constructors(year, season), ct);
         }
 
         await WriteAsync(outDir, "drivers", await stats.GetDriversAsync(ct), ct);
@@ -27,10 +33,21 @@ public class SnapshotExporter(StatsService stats, ILogger<SnapshotExporter> logg
         var circuits = await stats.GetCircuitsAsync(ct);
         await WriteAsync(outDir, "circuits", circuits, ct);
         foreach (var c in circuits)
-            await WriteAsync(outDir, $"circuits/{c.CircuitId}", await stats.GetCircuitAsync(c.CircuitId, ct), ct);
+        {
+            var circuit = (await stats.GetCircuitAsync(c.CircuitId, ct))!;
+            await WriteAsync(outDir, $"circuits/{c.CircuitId}", circuit, ct);
+            await WriteCsvAsync(outDir, $"circuits/{c.CircuitId}/races.csv", CsvExports.CircuitRaces(circuit), ct);
+        }
 
         logger.LogInformation("Exported snapshot to {Dir}; unreconciled seasons: {Unreconciled}",
             outDir, unreconciled.Count == 0 ? "none" : string.Join(",", unreconciled));
+    }
+
+    private static async Task WriteCsvAsync(string outDir, string route, CsvExports.CsvFile file, CancellationToken ct)
+    {
+        var path = Path.Combine(outDir, route);
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        await File.WriteAllBytesAsync(path, CsvTable.Bytes(file.Csv), ct);
     }
 
     private static async Task WriteAsync<T>(string outDir, string route, T body, CancellationToken ct)

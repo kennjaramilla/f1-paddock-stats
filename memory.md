@@ -90,12 +90,17 @@ web/                   Next.js 16 (App Router), proxy.ts, RTK store in src/store
 - Vercel: a custom `*.vercel.app` alias is behind deployment protection (SSO) until it's added as a project domain.
 - Docker web image: `NEXT_PUBLIC_API_URL` is a build arg (inlined); server-side calls use `API_INTERNAL_URL=http://api:8080`.
 
+## CSV downloads
+
+- The Standings card (season page, follows the drivers/constructors toggle) and "Every winner" (circuit page) have a CSV link.
+- `api/Csv/CsvExports.cs` builds each CSV once for both the endpoints (`/api/seasons/{year}/drivers.csv`, `/constructors.csv`, `/api/circuits/{id}/races.csv`) and the snapshot export, which writes them at the same paths under `web/public/data`. A test checks the exported bytes equal the API's.
+- `CsvTable`: RFC 4180 quoting, a leading `'` neutralises spreadsheet formulas, UTF-8 BOM so Excel reads accents. `csvUrl()` in `web/src/lib/api.ts` picks `/data/...` or `/api/live/...`; the live proxy forwards `Content-Disposition`.
+
 ## Next steps (cut for time; roadmap talking points)
 
 - Saved comparisons owned by users: resource-based authorization (owner check, 404 for others' private items), revocable share links,
   soft delete, "download my data". Needs a writable DB (Postgres) and a real user store.
 - Audit log of sign-ins and admin actions (with masked emails).
-- "Download CSV" buttons on the standings and circuit tables. The API side is done: `/api/seasons/{year}/drivers.csv`, `/constructors.csv` and `/api/circuits/{id}/races.csv` (`api/Csv/CsvTable.cs`: RFC 4180 quoting, a leading `'` neutralises spreadsheet formulas, UTF-8 BOM so Excel reads accents). Snapshot mode would need the CSVs exported alongside the JSON.
 - AWS deploy: `Amazon.Lambda.AspNetCoreServer.Hosting` is already wired (`AddAWSLambdaHosting(HttpApi)`; plain Kestrel locally).
   Next is a SAM template (HttpApi + function, read-only bundled SQLite), with Cognito replacing the shared-secret JWT.
 - Observability: OpenTelemetry traces/metrics (CloudWatch/X-Ray), web-vitals reporting, an error boundary that reports.

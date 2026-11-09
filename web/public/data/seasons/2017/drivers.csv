@@ -1,0 +1,26 @@
+﻿Position,Driver,Code,Nationality,Team,Points,Wins,Podiums,Poles,Starts,Best finish
+1,Lewis Hamilton,HAM,British,Mercedes,363,9,13,11,20,1
+2,Sebastian Vettel,VET,German,Ferrari,317,5,13,4,20,1
+3,Valtteri Bottas,BOT,Finnish,Mercedes,305,3,13,4,20,1
+4,Kimi Räikkönen,RAI,Finnish,Ferrari,205,0,7,1,20,2
+5,Daniel Ricciardo,RIC,Australian,Red Bull,200,1,9,0,20,1
+6,Max Verstappen,VER,Dutch,Red Bull,168,2,4,0,20,1
+7,Sergio Pérez,PER,Mexican,Force India,100,0,0,0,20,4
+8,Esteban Ocon,OCO,French,Force India,87,0,0,0,20,5
+9,Carlos Sainz,SAI,Spanish,Renault,54,0,0,0,20,4
+10,Nico Hülkenberg,HUL,German,Renault,43,0,0,0,20,6
+11,Felipe Massa,MAS,Brazilian,Williams,43,0,0,0,19,6
+12,Lance Stroll,STR,Canadian,Williams,40,0,1,0,20,3
+13,Romain Grosjean,GRO,French,Haas F1 Team,28,0,0,0,20,6
+14,Kevin Magnussen,MAG,Danish,Haas F1 Team,19,0,0,0,20,7
+15,Fernando Alonso,ALO,Spanish,McLaren,17,0,0,0,19,6
+16,Stoffel Vandoorne,VAN,Belgian,McLaren,13,0,0,0,20,7
+17,Jolyon Palmer,PAL,British,Renault,8,0,0,0,16,6
+18,Pascal Wehrlein,WEH,German,Sauber,5,0,0,0,18,8
+19,Daniil Kvyat,KVY,Russian,Toro Rosso,5,0,0,0,15,9
+20,Marcus Ericsson,ERI,Swedish,Sauber,0,0,0,0,20,11
+21,Pierre Gasly,GAS,French,Toro Rosso,0,0,0,0,5,12
+22,Antonio Giovinazzi,GIO,Italian,Sauber,0,0,0,0,2,12
+23,Brendon Hartley,HAR,New Zealander,Toro Rosso,0,0,0,0,4,13
+24,Jenson Button,BUT,British,McLaren,0,0,0,0,1,18
+25,Paul di Resta,DIR,British,Williams,0,0,0,0,1,18

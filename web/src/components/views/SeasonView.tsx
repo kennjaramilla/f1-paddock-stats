@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
+import { csvUrl } from '@/lib/api';
 import { driverLabel, fmtDate, fmtPoints, ordinal, plural, shortRace } from '@/lib/format';
 import { isNotFound, useGetSeasonQuery, useGetSeasonsQuery } from '@/store/api';
 import { selectChartSeries, selectSeasonFocus, selectUi } from '@/store/selectors';
@@ -10,7 +11,7 @@ import type { SeasonDetail } from '@/lib/types';
 import { ProgressionChart } from '../ProgressionChart';
 import { useResolvedTheme } from '../Providers';
 import { GatedLink } from '../RoleGate';
-import { Card, EmptyState, ErrorState, PageSkeleton, Segmented, Stat, TeamSwatch } from '../ui';
+import { Card, DownloadLink, EmptyState, ErrorState, PageSkeleton, Segmented, Stat, TeamSwatch } from '../ui';
 import { CumulativeTable } from '../CumulativeTable';
 
 export function SeasonView() {
@@ -103,7 +104,10 @@ export function SeasonView() {
       {focus && <FocusPanel season={season} id={focus} view={view} onClear={() => dispatch(highlighted(null))} />}
 
       <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-        <Card title="Standings">
+        <Card
+          title="Standings"
+          actions={<DownloadLink href={csvUrl(`seasons/${year}/${view}.csv`)} fileName={`f1-${year}-${view}.csv`} what={`${year} ${view === 'drivers' ? "drivers'" : "constructors'"} standings`} />}
+        >
           <StandingsTable season={season} view={view} focus={focus} onFocus={(id) => dispatch(highlightToggled(id))} />
         </Card>
         <Card title="Race by race">

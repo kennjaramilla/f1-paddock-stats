@@ -96,6 +96,24 @@ export function Stat({ label, value, hint }: { label: string; value: React.React
   );
 }
 
+/** A file download (CSV), styled as a small outline button. */
+export function DownloadLink({ href, fileName, what }: { href: string; fileName: string; what: string }) {
+  return (
+    <a
+      href={href}
+      download={fileName}
+      aria-label={`Download ${what} as CSV`}
+      className="inline-flex items-center gap-1.5 rounded-lg border border-line px-2.5 py-1 text-xs font-medium text-ink-2 hover:border-ink-3 hover:text-ink"
+      data-cy="csv-download"
+    >
+      <svg viewBox="0 0 16 16" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+        <path d="M8 2v8m0 0 3-3m-3 3L5 7M3 13h10" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      CSV
+    </a>
+  );
+}
+
 export function Card({ title, actions, children, className = '' }: { title?: React.ReactNode; actions?: React.ReactNode; children: React.ReactNode; className?: string }) {
   return (
     <section className={`min-w-0 rounded-2xl border border-line bg-surface p-4 sm:p-6 ${className}`}>

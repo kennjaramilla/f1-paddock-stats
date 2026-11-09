@@ -1,12 +1,13 @@
 'use client';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { csvUrl } from '@/lib/api';
 import { teamColorFor } from '@/lib/colors';
 import { driverLabel, plural, shortRace } from '@/lib/format';
 import { isNotFound, useGetCircuitQuery } from '@/store/api';
 import type { WinCount } from '@/lib/types';
 import { useResolvedTheme } from '../Providers';
-import { Card, EmptyState, ErrorState, PageSkeleton, Stat, TeamSwatch } from '../ui';
+import { Card, DownloadLink, EmptyState, ErrorState, PageSkeleton, Stat, TeamSwatch } from '../ui';
 import { PoleMeter } from './CircuitsView';
 
 export function CircuitDetailView() {
@@ -45,7 +46,10 @@ export function CircuitDetailView() {
           <Card title="Wins by team"><WinBars rows={c.winsByConstructor} color={(id) => teamColorFor(id, theme)} total={c.races.length} /></Card>
           <Card title="Wins by driver"><WinBars rows={c.winsByDriver.slice(0, 8)} color={() => 'var(--ink-2)'} total={c.races.length} /></Card>
         </div>
-        <Card title="Every winner">
+        <Card
+          title="Every winner"
+          actions={<DownloadLink href={csvUrl(`circuits/${c.circuitId}/races.csv`)} fileName={`f1-${c.circuitId}-winners.csv`} what={`winners at ${c.name}`} />}
+        >
           <div className="-mx-4 overflow-x-auto sm:mx-0">
             <table className="w-full min-w-[420px] text-sm tabular">
               <caption className="sr-only">Winners at {c.name}</caption>

@@ -9,3 +9,9 @@ export function resolveUrl(route: string, live: boolean = LIVE): string {
   const clean = route.replace(/^\/+|\/+$/g, '');
   return live ? `/api/live/${clean}` : `/data/${clean}.json`;
 }
+
+/** URL of a CSV download like `seasons/2021/drivers.csv`. The snapshot stores CSVs at their API paths. */
+export function csvUrl(route: string, live: boolean = LIVE): string {
+  const clean = route.replace(/^\/+|\/+$/g, '');
+  return live ? `/api/live/${clean}` : `/data/${clean}`;
+}
