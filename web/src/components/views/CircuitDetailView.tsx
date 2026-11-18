@@ -72,7 +72,7 @@ export function CircuitDetailView() {
                       <span className="inline-flex items-center gap-2">
                         <TeamSwatch constructorId={r.winnerTeam.constructorId} />
                         <span className="font-medium">{r.winner.name}</span>
-                        <span className="hidden text-xs text-ink-3 sm:inline">{r.winnerTeam.name}</span>
+                        <Link href={`/teams/${r.winnerTeam.constructorId}`} className="hidden text-xs text-ink-3 hover:text-accent hover:underline sm:inline">{r.winnerTeam.name}</Link>
                       </span>
                     </td>
                     <td className="px-2 py-2 text-right">{r.winnerGrid || 'PL'}</td>
