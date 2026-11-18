@@ -82,4 +82,34 @@ public class StatsCalculatorTests
         Assert.Equal(monaco.Races.Count(r => r.WonFromPole), monaco.PoleWins);
         Assert.Equal(2024, monaco.Races[0].Season);
     }
+
+    [Fact]
+    public void Constructor_detail_totals_a_teams_seasons()
+    {
+        var ds = SnapshotFixture.Load(2014, 2023);
+        var seasons = new[] { 2014, 2023 }.Select(y => StatsCalculator.Season(ds, y)).ToList();
+
+        var mercedes = StatsCalculator.Constructor(ds, seasons, "mercedes")!;
+        Assert.Equal([2023, 2014], mercedes.Seasons.Select(s => s.Season));
+        var y2014 = mercedes.Seasons[1];
+        Assert.Equal((1, 16), (y2014.Position, y2014.Wins));
+        Assert.Equal(["hamilton", "rosberg"], y2014.Drivers.Select(d => d.DriverId).Order());
+        Assert.Equal(11, mercedes.OneTwos);
+        Assert.Equal(18 + 1, mercedes.Poles); // 2014 plus Hamilton in Hungary 2023
+        Assert.Equal(1, mercedes.Titles);
+
+        var redBull = StatsCalculator.Constructor(ds, seasons, "red_bull")!;
+        Assert.Equal(21, redBull.Seasons[0].Wins);
+        Assert.Equal(redBull.Seasons.Sum(s => s.Podiums), redBull.Podiums);
+        Assert.Equal(redBull.Seasons.Sum(s => s.Points), redBull.Points);
+    }
+
+    [Fact]
+    public void Constructor_detail_is_null_for_unknown_or_absent_teams()
+    {
+        var ds = SnapshotFixture.Load(2014);
+        var seasons = new[] { StatsCalculator.Season(ds, 2014) };
+        Assert.Null(StatsCalculator.Constructor(ds, seasons, "nope"));
+        Assert.Null(StatsCalculator.Constructor(ds, seasons, "audi"));
+    }
 }

@@ -46,6 +46,12 @@ public record DriverSeasonTeam(int Season, string ConstructorId, string Construc
 
 public record ConstructorIndexItem(string ConstructorId, string Name, string? Nationality, List<int> Seasons);
 
+/// <summary>A team's history across the cached seasons, with career totals.</summary>
+public record ConstructorDetail(string ConstructorId, string Name, string? Nationality, List<ConstructorSeasonRow> Seasons,
+    int Titles, int Starts, int Wins, int Podiums, int Poles, int OneTwos, double Points);
+
+public record ConstructorSeasonRow(int Season, bool InProgress, int Position, double Points, int Wins, int Podiums, List<DriverRef> Drivers);
+
 public record CircuitIndexItem(string CircuitId, string Name, string? Locality, string? Country, double? Lat, double? Long,
     int Races, int FirstSeason, int LastSeason, DriverRef? LastWinner, double PoleToWinRate);
 
