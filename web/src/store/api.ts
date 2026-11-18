@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery, type BaseQueryFn, type FetchArgs, type FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { resolveUrl } from '@/lib/api';
 import type {
-  CircuitDetail, CircuitIndexItem, DriverIndexItem, Meta, SeasonDetail, SeasonIndexItem, SeasonResults,
+  CircuitDetail, CircuitIndexItem, ConstructorDetail, ConstructorIndexItem, DriverIndexItem, Meta, SeasonDetail, SeasonIndexItem, SeasonResults,
 } from '@/lib/types';
 
 const rawBaseQuery = fetchBaseQuery({ baseUrl: '' });
@@ -21,6 +21,8 @@ export const paddockApi = createApi({
     getSeasons: build.query<SeasonIndexItem[], void>({ query: () => 'seasons' }),
     getSeason: build.query<SeasonDetail, number>({ query: (year) => `seasons/${year}`, providesTags: (_r, _e, year) => [{ type: 'Season', id: year }] }),
     getDrivers: build.query<DriverIndexItem[], void>({ query: () => 'drivers' }),
+    getConstructors: build.query<ConstructorIndexItem[], void>({ query: () => 'constructors' }),
+    getConstructor: build.query<ConstructorDetail, string>({ query: (id) => `constructors/${id}` }),
     getCircuits: build.query<CircuitIndexItem[], void>({ query: () => 'circuits' }),
     getCircuit: build.query<CircuitDetail, string>({ query: (id) => `circuits/${id}` }),
     /** Head-to-head needs several seasons; fetched in parallel and returned in order. */
@@ -43,7 +45,7 @@ export const paddockApi = createApi({
 });
 
 export const {
-  useGetMetaQuery, useGetSeasonsQuery, useGetSeasonQuery, useGetDriversQuery,
+  useGetMetaQuery, useGetSeasonsQuery, useGetSeasonQuery, useGetDriversQuery, useGetConstructorsQuery, useGetConstructorQuery,
   useGetCircuitsQuery, useGetCircuitQuery, useGetSeasonResultsQuery, useRefreshSeasonMutation,
 } = paddockApi;
 

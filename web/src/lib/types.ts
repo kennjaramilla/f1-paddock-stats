@@ -36,6 +36,11 @@ export interface DriverIndexItem {
   seasons: DriverSeasonTeam[]; starts: number; wins: number; podiums: number; poles: number; points: number; titles: number;
 }
 export interface ConstructorIndexItem { constructorId: string; name: string; nationality: string | null; seasons: number[] }
+export interface ConstructorSeasonRow { season: number; inProgress: boolean; position: number; points: number; wins: number; podiums: number; drivers: DriverRef[] }
+export interface ConstructorDetail {
+  constructorId: string; name: string; nationality: string | null; seasons: ConstructorSeasonRow[];
+  titles: number; starts: number; wins: number; podiums: number; poles: number; oneTwos: number; points: number;
+}
 
 export interface CircuitIndexItem {
   circuitId: string; name: string; locality: string | null; country: string | null; lat: number | null; long: number | null;
