@@ -16,6 +16,7 @@ const NAV: NavItem[] = [
   { href: '/compare', label: 'Head-to-head', role: 'analyst', match: (p) => p.startsWith('/compare') },
   { href: '/circuits', label: 'Circuits', role: 'viewer', match: (p) => p.startsWith('/circuits') },
   { href: '/drivers', label: 'Drivers', role: 'viewer', match: (p) => p.startsWith('/drivers') },
+  { href: '/teams', label: 'Teams', role: 'viewer', match: (p) => p.startsWith('/teams') },
   { href: '/admin', label: 'Admin', role: 'admin', hideWhenLocked: true, match: (p) => p.startsWith('/admin') },
 ];
 
