@@ -45,6 +45,12 @@ public class AuthorizationTests : IClassFixture<AuthorizationTests.ApiFactory>
         Assert.Equal(HttpStatusCode.OK, await GetAsync("/api/seasons/2021", null));
 
     [Theory]
+    [InlineData("/api/constructors/mercedes", HttpStatusCode.OK)]
+    [InlineData("/api/constructors/not-a-team", HttpStatusCode.NotFound)]
+    public async Task Team_pages_are_public(string url, HttpStatusCode expected) =>
+        Assert.Equal(expected, await GetAsync(url, null));
+
+    [Theory]
     [InlineData(null, HttpStatusCode.Unauthorized)]
     [InlineData("viewer", HttpStatusCode.Forbidden)]
     [InlineData("analyst", HttpStatusCode.OK)]

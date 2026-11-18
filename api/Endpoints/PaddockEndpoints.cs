@@ -21,6 +21,8 @@ public static class PaddockEndpoints
             .RequireAuthorization(Policies.Analyst); // race-by-race data powers head-to-head
         api.MapGet("/drivers", (StatsService s, CancellationToken ct) => s.GetDriversAsync(ct));
         api.MapGet("/constructors", (StatsService s, CancellationToken ct) => s.GetConstructorsAsync(ct));
+        api.MapGet("/constructors/{id}", async (string id, StatsService s, CancellationToken ct) =>
+            await s.GetConstructorAsync(id, ct) is { } team ? Results.Ok(team) : Results.NotFound());
         api.MapGet("/circuits", (StatsService s, CancellationToken ct) => s.GetCircuitsAsync(ct));
         api.MapGet("/circuits/{id}", async (string id, StatsService s, CancellationToken ct) =>
             await s.GetCircuitAsync(id, ct) is { } circuit ? Results.Ok(circuit) : Results.NotFound());
