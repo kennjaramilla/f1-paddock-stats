@@ -96,6 +96,12 @@ web/                   Next.js 16 (App Router), proxy.ts, RTK store in src/store
 - `api/Csv/CsvExports.cs` builds each CSV once for both the endpoints (`/api/seasons/{year}/drivers.csv`, `/constructors.csv`, `/api/circuits/{id}/races.csv`) and the snapshot export, which writes them at the same paths under `web/public/data`. A test checks the exported bytes equal the API's.
 - `CsvTable`: RFC 4180 quoting, a leading `'` neutralises spreadsheet formulas, UTF-8 BOM so Excel reads accents. `csvUrl()` in `web/src/lib/api.ts` picks `/data/...` or `/api/live/...`; the live proxy forwards `Content-Disposition`.
 
+## Team pages
+
+- `StatsCalculator.Constructor` builds a team's history from the per-season `ConstructorSeason` rows plus race results: titles count completed seasons only, a one-two is P1 and P2 for the same team, and a pole is the qualifying P1's team (grid 1 when qualifying is missing). The calculator test pins Mercedes 2014 (16 wins, 11 one-twos, 18 poles).
+- `/api/constructors/{id}` is public; the snapshot export writes `web/public/data/constructors/{id}.json`. Unknown ids return 404, which `isNotFound` turns into the "Team not found" state.
+- Web: `/teams` (current grid vs former teams, `lib/teams.ts`) and `/teams/[id]`. Team names on driver, circuit and season pages link there.
+
 ## Next steps (cut for time; roadmap talking points)
 
 - Saved comparisons owned by users: resource-based authorization (owner check, 404 for others' private items), revocable share links,
