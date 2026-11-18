@@ -9,6 +9,7 @@
 | `/season/[year]` | Championship progression chart, standings, race-by-race winners | Viewer |
 | `/circuits`, `/circuits/[id]` | Circuit list (search/sort) and history: winners, pole-to-win rate, wins by team | Viewer |
 | `/drivers`, `/drivers/[id]` | Driver list and career (finish per season, teammates) | Viewer |
+| `/teams`, `/teams/[id]` | Teams on the latest grid and former teams; team history: titles, wins, one-twos, poles, finish per season, line-ups (new drivers flagged) | Viewer |
 | `/compare?a=&b=&from=&to=` | Head-to-head: race + qualifying battles, totals, race-by-race diverging bars | Analyst |
 | `/admin` | Users and roles; refresh a season (live mode only) | Admin |
 | `/forbidden` | 403 page naming the role required | public |
@@ -51,7 +52,7 @@ flowchart LR
 
 | Method | Route | Auth |
 | --- | --- | --- |
-| GET | `/api/meta`, `/api/seasons`, `/api/seasons/{year}`, `/api/drivers`, `/api/constructors`, `/api/circuits`, `/api/circuits/{id}` | public |
+| GET | `/api/meta`, `/api/seasons`, `/api/seasons/{year}`, `/api/drivers`, `/api/constructors`, `/api/constructors/{id}`, `/api/circuits`, `/api/circuits/{id}` | public |
 | GET | `/api/seasons/{year}/results` (race-by-race data behind head-to-head) | `Analyst` policy |
 | POST | `/api/admin/seasons/{year}/refresh` | `Admin` policy |
 | GET | `/health` | public |

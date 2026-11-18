@@ -29,7 +29,10 @@ public class SnapshotExporter(StatsService stats, ILogger<SnapshotExporter> logg
         }
 
         await WriteAsync(outDir, "drivers", await stats.GetDriversAsync(ct), ct);
-        await WriteAsync(outDir, "constructors", await stats.GetConstructorsAsync(ct), ct);
+        var constructors = await stats.GetConstructorsAsync(ct);
+        await WriteAsync(outDir, "constructors", constructors, ct);
+        foreach (var c in constructors)
+            await WriteAsync(outDir, $"constructors/{c.ConstructorId}", await stats.GetConstructorAsync(c.ConstructorId, ct), ct);
         var circuits = await stats.GetCircuitsAsync(ct);
         await WriteAsync(outDir, "circuits", circuits, ct);
         foreach (var c in circuits)

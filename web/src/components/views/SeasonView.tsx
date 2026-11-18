@@ -65,7 +65,7 @@ export function SeasonView() {
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label={season.inProgress ? 'Leader' : 'Champion'} value={champ ? driverLabel(champ) : '—'} hint={champ && `${champ.constructorName} · ${plural(champ.wins, 'win')}`} />
-        <Stat label={season.inProgress ? 'Leading team' : 'Constructors'} value={consChamp?.name ?? '—'} hint={consChamp && `${fmtPoints(consChamp.points)} pts`} />
+        <Stat label={season.inProgress ? 'Leading team' : 'Constructors'} value={consChamp ? <Link href={`/teams/${consChamp.constructorId}`} className="hover:text-accent hover:underline">{consChamp.name}</Link> : '—'} hint={consChamp && `${fmtPoints(consChamp.points)} pts`} />
         <Stat label="Rounds" value={season.races.length} hint={sprints ? `${plural(sprints, 'sprint')}` : 'No sprints'} />
         <Stat label="Different winners" value={winners.size} hint={`${plural(season.drivers.filter((d) => d.points > 0).length, 'driver')} scored`} />
       </div>

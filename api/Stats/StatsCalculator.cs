@@ -207,6 +207,35 @@ public static class StatsCalculator
             .OrderBy(c => c.Name).ToList();
     }
 
+    public static ConstructorDetail? Constructor(Dataset ds, IReadOnlyList<SeasonDetail> seasons, string constructorId)
+    {
+        if (!ds.Constructors.TryGetValue(constructorId, out var c)) return null;
+        var rows = seasons.Select(s => (s, team: s.Constructors.FirstOrDefault(t => t.ConstructorId == constructorId)))
+            .Where(x => x.team is not null).ToList();
+        if (rows.Count == 0) return null;
+
+        var seasonOf = ds.Races.ToDictionary(r => r.Id, r => r.Season);
+        var race = ds.Results.Where(r => r.Kind == SessionKind.Race).ToList();
+        var ours = race.Where(r => r.ConstructorId == constructorId).ToList();
+        var podiums = ours.Where(r => r.Position <= 3).GroupBy(r => seasonOf[r.RaceId]).ToDictionary(g => g.Key, g => g.Count());
+        var oneTwos = race.Where(r => r.Position <= 2).GroupBy(r => r.RaceId)
+            .Count(g => g.Count() == 2 && g.All(r => r.ConstructorId == constructorId));
+        // Pole = qualifying P1's team, or the grid-1 car when qualifying is missing.
+        var poles = ours.Select(r => r.RaceId).Distinct().Count(id =>
+            (ds.Qualifying.FirstOrDefault(q => q.RaceId == id && q.Position == 1)?.ConstructorId
+             ?? race.FirstOrDefault(r => r.RaceId == id && r.Grid == 1)?.ConstructorId) == constructorId);
+
+        var seasonRows = rows.OrderByDescending(x => x.s.Year).Select(x => new ConstructorSeasonRow(
+            x.s.Year, x.s.InProgress, x.team!.Position, x.team.Points, x.team.Wins, podiums.GetValueOrDefault(x.s.Year),
+            x.team.DriverIds.Where(ds.Drivers.ContainsKey).Select(id => Ref(ds.Drivers[id])).ToList())).ToList();
+
+        return new ConstructorDetail(c.ConstructorId, c.Name, c.Nationality, seasonRows,
+            seasonRows.Count(r => !r.InProgress && r.Position == 1),
+            ours.Select(r => r.RaceId).Distinct().Count(),
+            ours.Count(r => r.Position == 1), ours.Count(r => r.Position <= 3), poles, oneTwos,
+            Round2(seasonRows.Sum(r => r.Points)));
+    }
+
     public static CircuitDetail? Circuit(Dataset ds, string circuitId)
     {
         if (!ds.Circuits.TryGetValue(circuitId, out var c)) return null;

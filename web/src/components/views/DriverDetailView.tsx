@@ -84,7 +84,7 @@ export function DriverDetailView() {
                 return (
                   <tr key={s.season} className="border-t border-line">
                     <td className="px-4 py-2 sm:px-2"><Link href={`/season/${s.season}`} onClick={() => followDriver(d.driverId)} className="font-semibold hover:text-accent hover:underline">{s.season}</Link></td>
-                    <td className="px-2 py-2"><span className="inline-flex items-center gap-2"><TeamSwatch constructorId={s.constructorId} />{s.constructorName}</span></td>
+                    <td className="px-2 py-2"><Link href={`/teams/${s.constructorId}`} className="inline-flex items-center gap-2 hover:text-accent hover:underline"><TeamSwatch constructorId={s.constructorId} />{s.constructorName}</Link></td>
                     <td className="px-2 py-2 text-right">{ordinal(s.position)}</td>
                     <td className="px-2 py-2 text-right font-semibold">{fmtPoints(s.points)}</td>
                     <td className="px-2 py-2 text-right">{s.wins || ''}</td>

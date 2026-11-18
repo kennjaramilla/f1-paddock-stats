@@ -44,6 +44,12 @@ public class StatsService(PaddockDbContext db, IMemoryCache cache, TimeProvider 
     public async Task<List<ConstructorIndexItem>> GetConstructorsAsync(CancellationToken ct) =>
         StatsCalculator.ConstructorIndex(await GetDatasetAsync(ct));
 
+    public async Task<ConstructorDetail?> GetConstructorAsync(string id, CancellationToken ct)
+    {
+        var ds = await GetDatasetAsync(ct);
+        return StatsCalculator.Constructor(ds, Years(ds).Select(y => StatsCalculator.Season(ds, y)).ToList(), id);
+    }
+
     public async Task<List<CircuitIndexItem>> GetCircuitsAsync(CancellationToken ct) =>
         StatsCalculator.CircuitIndex(await GetDatasetAsync(ct));
 
