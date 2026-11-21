@@ -85,6 +85,24 @@ export function headToHead(seasons: SeasonResults[], a: string, b: string): H2HS
   };
 }
 
+export interface SeasonScore {
+  season: number;
+  race: { a: number; b: number };
+  quali: { a: number; b: number };
+}
+
+/** Race and qualifying battles split by season, oldest first. */
+export function scoresBySeason(races: H2HRace[]): SeasonScore[] {
+  const out = new Map<number, SeasonScore>();
+  for (const r of races) {
+    const s = out.get(r.season) ?? { season: r.season, race: { a: 0, b: 0 }, quali: { a: 0, b: 0 } };
+    s.race[r.raceWinner]++;
+    if (r.qualiWinner) s.quali[r.qualiWinner]++;
+    out.set(r.season, s);
+  }
+  return [...out.values()].sort((x, y) => x.season - y.season);
+}
+
 /** Seasons both drivers raced in. */
 export function sharedSeasons(a: DriverIndexItem | undefined, b: DriverIndexItem | undefined): number[] {
   if (!a || !b) return [];
