@@ -21,6 +21,14 @@ describe('Head-to-head (analyst)', () => {
     cy.contains('h2', 'Totals · 2016');
     cy.get('[data-testid=h2h-results] section[aria-label="2016 season"]').should('exist');
     cy.get('[data-testid=h2h-results] section[aria-label="2014 season"]').should('not.exist');
+    cy.get('[data-testid=h2h-seasons]').should('not.exist');
+  });
+
+  it('splits a multi-season rivalry by season', () => {
+    cy.visit('/compare?a=hamilton&b=rosberg');
+    cy.get('[data-testid=h2h-seasons] tbody tr').should('have.length', 3);
+    cy.get('[data-testid=h2h-seasons] tbody th').first().should('have.text', '2014');
+    cy.checkPageA11y();
   });
 
   it('loads a featured rivalry and swaps sides', () => {
