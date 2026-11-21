@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { contrast, teamColorFor } from '@/lib/colors';
 import { driverLabel, fmtPoints, ordinal, shortRace } from '@/lib/format';
-import { headToHead, sharedSeasons, teammatePairs, type H2HRace, type H2HSummary } from '@/lib/h2h';
+import { headToHead, scoresBySeason, sharedSeasons, teammatePairs, type H2HRace, type H2HSummary, type SeasonScore } from '@/lib/h2h';
 import { useGetDriversQuery, useGetSeasonResultsQuery, useGetSeasonsQuery } from '@/store/api';
 import type { DriverIndexItem } from '@/lib/types';
 import { useCompareParams } from '@/lib/useUrlState';
@@ -147,6 +147,7 @@ function Results({ A, B, summary, colorA, colorB, from, to }: { A: DriverIndexIt
   const codeB = driverLabel({ code: B.code, name: B.familyName });
   const races = only === 'teammates' ? summary.races.filter((r) => r.teammates) : summary.races;
   const rangeLabel = from === to ? `${from}` : `${from}–${to}`;
+  const seasons = useMemo(() => scoresBySeason(races), [races]);
 
   return (
     <div className="space-y-6" data-testid="h2h-results">
@@ -160,6 +161,12 @@ function Results({ A, B, summary, colorA, colorB, from, to }: { A: DriverIndexIt
       <Card title={`Totals · ${rangeLabel}`}>
         <TotalsTable A={A} B={B} summary={summary} colorA={colorA} colorB={colorB} codeA={codeA} codeB={codeB} />
       </Card>
+
+      {seasons.length > 1 && (
+        <Card title="Season by season">
+          <SeasonTable seasons={seasons} codeA={codeA} codeB={codeB} colorA={colorA} colorB={colorB} />
+        </Card>
+      )}
 
       <Card
         title="Who beat whom, race by race"
@@ -241,6 +248,39 @@ function TotalsTable({ A, B, summary, colorA, colorB, codeA, codeB }: { A: Drive
             </tr>
           );
         })}
+      </tbody>
+    </table>
+  );
+}
+
+function SeasonTable({ seasons, codeA, codeB, colorA, colorB }: { seasons: SeasonScore[]; codeA: string; codeB: string; colorA: string; colorB: string }) {
+  // Text stays ink for contrast; a dot in the winner's colour marks who took the season.
+  const score = (x: { a: number; b: number }) => (
+    <span className="inline-flex items-center gap-2">
+      <span aria-hidden className="h-2 w-2 rounded-full" style={{ background: x.a === x.b ? 'transparent' : x.a > x.b ? colorA : colorB }} />
+      <span className={x.a > x.b ? 'font-bold' : 'text-ink-2'}>{x.a}</span>
+      <span className="text-ink-3">–</span>
+      <span className={x.b > x.a ? 'font-bold' : 'text-ink-2'}>{x.b}</span>
+    </span>
+  );
+  return (
+    <table className="w-full text-sm tabular" data-testid="h2h-seasons">
+      <caption className="sr-only">Race and qualifying battles by season, {codeA} first</caption>
+      <thead>
+        <tr className="text-left text-xs uppercase tracking-wider text-ink-3">
+          <th scope="col" className="py-2">Season</th>
+          <th scope="col" className="py-2">Race · {codeA}–{codeB}</th>
+          <th scope="col" className="py-2">Qualifying · {codeA}–{codeB}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {seasons.map((s) => (
+          <tr key={s.season} className="border-t border-line">
+            <th scope="row" className="py-2 text-left font-display text-base font-semibold">{s.season}</th>
+            <td className="py-2">{score(s.race)}</td>
+            <td className="py-2">{score(s.quali)}</td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );
