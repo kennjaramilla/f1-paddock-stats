@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { drivers, seasonResults } from '@/test/fixtures';
-import { headToHead, sharedSeasons, teammatePairs } from './h2h';
+import { headToHead, scoresBySeason, sharedSeasons, teammatePairs, type H2HRace } from './h2h';
 
 describe('headToHead', () => {
   const s = headToHead(seasonResults, 'hamilton', 'rosberg');
@@ -51,5 +51,24 @@ describe('sharedSeasons / teammatePairs', () => {
     const pairs = teammatePairs(drivers, 2021);
     expect(pairs.map((p) => [p.constructorId, p.a.driverId, p.b.driverId])).toEqual([['red_bull', 'max_verstappen', 'perez']]);
     expect(teammatePairs(drivers, 2016)[0]).toMatchObject({ constructorId: 'mercedes', a: { driverId: 'rosberg' } });
+  });
+});
+
+describe('scoresBySeason', () => {
+  const race = (season: number, raceWinner: 'a' | 'b', qualiWinner: 'a' | 'b' | null) => ({ season, raceWinner, qualiWinner }) as H2HRace;
+
+  it('splits race and qualifying battles by season, oldest first', () => {
+    const scores = scoresBySeason([race(2015, 'a', 'b'), race(2014, 'b', 'b'), race(2015, 'a', null), race(2014, 'a', 'a')]);
+    expect(scores).toEqual([
+      { season: 2014, race: { a: 1, b: 1 }, quali: { a: 1, b: 1 } },
+      { season: 2015, race: { a: 2, b: 0 }, quali: { a: 0, b: 1 } },
+    ]);
+  });
+
+  it('adds up to the overall battle', () => {
+    const s = headToHead(seasonResults, 'hamilton', 'rosberg');
+    const scores = scoresBySeason(s.races);
+    expect(scores.reduce((n, x) => n + x.race.a, 0)).toBe(s.race.a);
+    expect(scores.reduce((n, x) => n + x.quali.b, 0)).toBe(s.quali.b);
   });
 });
